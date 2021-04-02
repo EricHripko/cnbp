@@ -35,6 +35,8 @@ type Service interface {
 	GetMetadata() ([]byte, error)
 	// GetExcludes returns the list of paths to exclude from the build context.
 	GetExcludes() ([]string, error)
+	// GetBuildArgs returns the list of build-time variables.
+	GetBuildArgs() map[string]string
 	// GetBuildPlatform returns the build platform for the client.
 	GetBuildPlatform() *specs.Platform
 	// GetTargetPlatforms returns the list of target platforms for the image(s) being built.

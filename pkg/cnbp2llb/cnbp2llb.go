@@ -11,6 +11,10 @@ const PlatformAPI = "0.5"
 // See https://github.com/buildpacks/spec/blob/main/platform.md#inputs
 const AppDir = "/workspace"
 
+// PlatformDir specifies the default value for the path to platform directory.
+// See https://github.com/buildpacks/spec/blob/main/platform.md#inputs
+const PlatformDir = "/platform"
+
 // LayersDir specifies the default value for the path to layers directory.
 // See https://github.com/buildpacks/spec/blob/main/platform.md#inputs
 const LayersDir = "/layers"

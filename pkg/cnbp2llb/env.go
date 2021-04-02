@@ -3,6 +3,8 @@ package cnbp2llb
 import (
 	"context"
 	"fmt"
+	"os"
+	"path"
 
 	"github.com/EricHripko/cnbp/pkg/cib"
 
@@ -42,5 +44,18 @@ func BuildEnvironment(ctx context.Context, build cib.Service, platform *specs.Pl
 	)
 	// Setup environment
 	state = state.AddEnv("CNB_PLATFORM_API", PlatformAPI)
+	// Inject user-provided variables
+	// See https://github.com/buildpacks/spec/blob/main/platform.md#user-provided-variables
+	for name, value := range build.GetBuildArgs() {
+		path := path.Join(PlatformDir, "env", name)
+		state = state.File(
+			llb.Mkfile(
+				path,
+				os.FileMode(0o644),
+				[]byte(value),
+			),
+			llb.WithCustomNamef("Set %s=%s", name, value),
+		)
+	}
 	return
 }

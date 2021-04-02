@@ -14,6 +14,7 @@ import (
 // for compatibility
 
 const (
+	buildArgPrefix       = "build-arg:"
 	dockerignoreFilename = ".dockerignore"
 	keyImageResolveMode  = "image-resolve-mode"
 	keyFilename          = "filename"
@@ -61,4 +62,14 @@ func parseResolveMode(v string) (llb.ResolveMode, error) {
 	default:
 		return 0, errors.Errorf("invalid image-resolve-mode: %s", v)
 	}
+}
+
+func filter(opt map[string]string, key string) map[string]string {
+	m := map[string]string{}
+	for k, v := range opt {
+		if strings.HasPrefix(k, key) {
+			m[strings.TrimPrefix(k, key)] = v
+		}
+	}
+	return m
 }

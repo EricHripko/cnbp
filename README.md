@@ -78,3 +78,63 @@ $ curl http://localhost:8080
 </body>
 </html>
 ```
+
+### Setting environment variables
+
+Buildpacks support configuration via build-time environment variables.
+These are mapped to build args in Docker, meaning that you can either:
+
+- Set them on CLI with `--build-arg` argument
+- Set them in Compose with `args:` attribute
+
+For example, we can configure JVM version (see [paketo Buildpacks docs](https://paketo.io/docs/buildpacks/configuration/#environment-variables)):
+
+```shell
+$ docker build -t sample --build-arg BP_JVM_VERSION=8 .
+[+] Building 39.1s (29/29) FINISHED
+ => [internal] load build definition from Dockerfile                                                               0.1s
+ => => transferring dockerfile: 110B                                                                               0.0s
+ => [internal] load .dockerignore                                                                                  0.0s
+ => => transferring context: 2B                                                                                    0.0s
+ => resolve image config for docker.io/erichripko/cnbp:latest                                                      0.0s
+ => CACHED docker-image://docker.io/erichripko/cnbp:latest                                                         0.0s
+ => [internal] load build definition from Dockerfile                                                               0.0s
+ => => transferring dockerfile: 110B                                                                               0.0s
+ => load metadata for docker.io/paketobuildpacks/builder:full                                                      0.0s
+ => [internal] load context                                                                                        0.0s
+ => => transferring context: 4.16kB                                                                                0.0s
+ => Builder is paketobuildpacks/builder:full                                                                       0.0s
+ => CACHED Load sources                                                                                            0.0s
+ => CACHED Set BP_JVM_VERSION=8                                                                                    0.0s
+ => CACHED Detection                                                                                               0.0s
+ => CACHED Load group definition                                                                                   0.0s
+ => CACHED Load plan definition                                                                                    0.0s
+ => Build                                                                                                         32.0s
+ => load metadata for docker.io/paketobuildpacks/run:full-cnb                                                      0.0s
+ => CACHED Run image is index.docker.io/paketobuildpacks/run:full-cnb                                              0.0s
+ => Exporting launcher                                                                                             0.1s
+ => Exporting buildpack layer /layers/paketo-buildpacks_ca-certificates/helper                                     0.1s
+ => Exporting buildpack layer /layers/paketo-buildpacks_bellsoft-liberica/helper                                   0.1s
+ => Exporting buildpack layer /layers/paketo-buildpacks_bellsoft-liberica/java-security-properties                 0.1s
+ => Exporting buildpack layer /layers/paketo-buildpacks_bellsoft-liberica/jre                                      0.8s
+ => Exporting buildpack layer /layers/paketo-buildpacks_bellsoft-liberica/jvmkill                                  0.1s
+ => Exporting buildpack layer /layers/paketo-buildpacks_executable-jar/classpath                                   0.2s
+ => Exporting buildpack layer /layers/paketo-buildpacks_spring-boot/helper                                         0.1s
+ => Exporting buildpack layer /layers/paketo-buildpacks_spring-boot/spring-cloud-bindings                          0.1s
+ => Exporting buildpack layer /layers/paketo-buildpacks_spring-boot/web-application-type                           0.1s
+ => Exporting app layer                                                                                            0.2s
+ => Exporting build metadata                                                                                       0.1s
+ => exporting to image                                                                                             1.3s
+ => => exporting layers                                                                                            1.3s
+ => => writing image sha256:7342883afc5ad3c62de8076ecb1261e75aa31ec4336d8af9b35c354368392334                       0.0s
+ => => naming to docker.io/library/sample                                                                          0.0s
+```
+
+If you inspect Java in the container, you will see that it's indeed version 8:
+
+```shell
+$ java -version
+openjdk version "1.8.0_282"
+OpenJDK Runtime Environment (build 1.8.0_282-b08)
+OpenJDK 64-Bit Server VM (build 25.282-b08, mixed mode)
+```

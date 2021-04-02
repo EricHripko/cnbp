@@ -184,6 +184,10 @@ func (s *service) FetchImageConfig(name string, platform *specs.Platform) (img d
 	return
 }
 
+func (s *service) GetBuildArgs() map[string]string {
+	return filter(s.GetOpts(), buildArgPrefix)
+}
+
 func (s *service) GetBuildPlatform() *specs.Platform {
 	platform := platforms.DefaultSpec()
 	if workers := s.client.BuildOpts().Workers; len(workers) > 0 && len(workers[0].Platforms) > 0 {
