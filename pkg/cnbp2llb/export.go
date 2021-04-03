@@ -22,7 +22,23 @@ import (
 // Export the produced layers into an OCI image. Unlike other high-level
 // functions in this package, we have to manage the export manually (without
 // lifecycle) to fit in with the BuildKit model of the world.
-func Export(ctx context.Context, build cib.Service, built llb.State) (ref client.Reference, img *dockerfile2llb.Image, err error) {
+func Export(ctx context.Context, build cib.Service, built llb.State, cache llb.RunOption) (ref client.Reference, img *dockerfile2llb.Image, err error) {
+	// Shall write the contents of all cached layers to the cache
+	// Shall record the diffID and layer content metadata of all cached layers
+	// in the cache
+	// Relying on an external image since BuildKit doesn't provide a way to
+	// inject the binary from the frontend.
+	// See: https://github.com/moby/buildkit/issues/2063
+	built = built.Run(
+		llb.Args([]string{"/frontend/go/bin/cacher"}),
+		llb.WithCustomName("Populating cache"),
+		// Mount frontend for the cacher binary
+		llb.AddMount(
+			"/frontend",
+			llb.Image("erichripko/cnbp"),
+		),
+		cache,
+	).Root()
 	ref, err = build.Solve(ctx, built)
 	if err != nil {
 		return

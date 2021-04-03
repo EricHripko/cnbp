@@ -138,3 +138,41 @@ openjdk version "1.8.0_282"
 OpenJDK Runtime Environment (build 1.8.0_282-b08)
 OpenJDK 64-Bit Server VM (build 25.282-b08, mixed mode)
 ```
+
+### Caching
+
+Layers that have `cache=true` will be stored in BuildKit build-time cache.
+For example:
+
+```shell
+$ docker build -t sample .
+[+] Building 59.1s (33/33) FINISHED
+...
+$ echo bust > file
+$ docker build -t sample .
+[+] Building 32.2s (33/33) FINISHED
+...
+#13 Analyze
+#13 sha256:bc95079754ce8087237b9e4b8b24413ba96328b79315060ed65064ade1dfa692
+#13 2.178 Previous image with name "this-image-definitely-does-not-exist" not found
+#13 2.598 Restoring metadata for "paketo-buildpacks/bellsoft-liberica:jdk" from cache
+#13 2.599 Restoring metadata for "paketo-buildpacks/maven:application" from cache
+#13 2.600 Restoring metadata for "paketo-buildpacks/maven:cache" from cache
+#13 DONE 2.7s
+
+#14 Restore
+#14 sha256:1095e4ee229fee1a92fcb17a9bd16c164d5e61270d9341835d14b086954ec1ac
+#14 0.443 Restoring data for "paketo-buildpacks/bellsoft-liberica:jdk" from cache
+#14 0.445 Restoring data for "paketo-buildpacks/maven:application" from cache
+#14 0.445 Restoring data for "paketo-buildpacks/maven:cache" from cache
+#14 DONE 3.0s
+...
+#15 Build
+#15 sha256:373931a74c93e2a8a589f93437fdf5deeb670228a5d6fc0b30551812cadb6305
+#15 0.778
+...
+#15 0.880   BellSoft Liberica JDK 11.0.10: Reusing cached layer
+...
+```
+
+Note that build-time cached can be wiped by running `docker builder prune`.

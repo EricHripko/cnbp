@@ -19,6 +19,11 @@ const PlatformDir = "/platform"
 // See https://github.com/buildpacks/spec/blob/main/platform.md#inputs
 const LayersDir = "/layers"
 
+// CacheDir specifies the default path to the cache directory.
+// This value isn't defined by the spec, but is commonly used in platform
+// implementations.
+const CacheDir = "/cache"
+
 // GroupPath specifies the default value for the output group definition.
 // See https://github.com/buildpacks/spec/blob/main/platform.md#inputs
 const GroupPath = "group.toml"

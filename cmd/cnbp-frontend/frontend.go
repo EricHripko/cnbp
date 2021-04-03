@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 
@@ -11,6 +12,7 @@ import (
 	"github.com/EricHripko/cnbp/pkg/cnbp2llb"
 	"github.com/containerd/containerd/platforms"
 
+	"github.com/moby/buildkit/client/llb"
 	"github.com/moby/buildkit/exporter/containerimage/exptypes"
 	"github.com/moby/buildkit/frontend/gateway/client"
 	specs "github.com/opencontainers/image-spec/specs-go/v1"
@@ -77,12 +79,37 @@ func BuildWithService(ctx context.Context, c client.Client, svc cib.Service) (*c
 					return errors.Wrap(err, "cannot prepare environment")
 				}
 
+				// Prepare cache
+				uid, err := cib.FetchUID(ctx, env)
+				if err != nil {
+					return err
+				}
+				gid, err := cib.FetchGID(ctx, env)
+				if err != nil {
+					return err
+				}
+				cache := llb.AddMount(
+					cnbp2llb.CacheDir,
+					llb.Scratch().File(
+						llb.Mkdir(
+							cnbp2llb.CacheDir,
+							os.FileMode(0o755),
+							llb.WithUIDGID(uid, gid),
+						),
+						llb.WithCustomName("Setting cache mount permissions"),
+					),
+					llb.SourcePath(cnbp2llb.CacheDir),
+					llb.AsPersistentCacheDir("buildpacks-cache", llb.CacheMountPrivate),
+				)
+
 				// Detect and build
 				detected := cnbp2llb.Detect(ctx, svc, env)
-				built := cnbp2llb.Build(ctx, svc, env, detected)
+				analyzed := cnbp2llb.Analyze(ctx, svc, env, detected, cache)
+				restored := cnbp2llb.Restore(ctx, svc, analyzed, cache)
+				built := cnbp2llb.Build(ctx, svc, restored)
 
 				// Export
-				ref, img, err := cnbp2llb.Export(ctx, svc, built)
+				ref, img, err := cnbp2llb.Export(ctx, svc, built, cache)
 				if err != nil {
 					return errors.Wrap(err, "cannot export")
 				}
