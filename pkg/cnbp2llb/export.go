@@ -35,6 +35,7 @@ func Export(ctx context.Context, build cib.Service, built llb.State, cache llb.R
 		// Mount frontend for the cacher binary
 		llb.AddMount(
 			"/frontend",
+			// TODO: can we make this dynamic
 			llb.Image("erichripko/cnbp"),
 		),
 		cache,
@@ -130,6 +131,7 @@ func Export(ctx context.Context, build cib.Service, built llb.State, cache llb.R
 			llb.WithCustomNamef("Exporting buildpack layer %s", layer),
 		)
 	}
+
 	// Must contain one or more app layers
 	state = state.File(
 		llb.Copy(

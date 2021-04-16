@@ -22,7 +22,8 @@ but is not there yet.
 
 ```dockerfile
 # syntax = erichripko/cnbp
-paketobuildpacks/builder:full
+[io.buildpacks.build]
+builder = "some-builder"
 ```
 
 - Build it
