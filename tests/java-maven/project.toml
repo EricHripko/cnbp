@@ -1,0 +1,8 @@
+# syntax = erichripko/cnbp
+[project]
+id = "io.buildpacks.java-maven-app"
+name = "Java app packaged with Maven"
+version = "1.0.0"
+
+[io.buildpacks.build]
+builder = "paketobuildpacks/builder:full"
