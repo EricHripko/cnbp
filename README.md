@@ -6,21 +6,15 @@ since BuildKit [doesn't support Windows yet](https://github.com/moby/buildkit/is
 Frontend aims to implement [Platform API 0.5](https://github.com/buildpacks/spec/),
 but is not there yet.
 
-## How to build it
-
-- Clone the repository
-- Build the frontend image: `docker build -t erichripko/cnbp .`
-
 ## How to try it
 
 - Make sure that BuildKit is enabled in your daemon
 - Clone CNBP [samples repository](https://github.com/buildpacks/samples)
-- Add the following lines to the `Dockerfile`. As you can see, the only
-  content apart from the syntax stanza should be the name of the builder
-  to be used. This corresponds to `<image-name>` of
-  `pack build <image-name> [flags]` invocation.
+- Add the following lines to the [project.toml](https://buildpacks.io/docs/app-developer-guide/using-project-descriptor/).
+  `builder` corresponds to `--builder` flag of `pack build <image-name> [flags]`
+  invocation.
 
-```dockerfile
+```toml
 # syntax = erichripko/cnbp
 [io.buildpacks.build]
 builder = "some-builder"
