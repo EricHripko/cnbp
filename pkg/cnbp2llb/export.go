@@ -8,9 +8,8 @@ import (
 	"path"
 	"strings"
 
-	"github.com/EricHripko/cnbp/pkg/cib"
-
 	"github.com/BurntSushi/toml"
+	"github.com/EricHripko/buildkit-fdk/pkg/cib"
 	cnbp "github.com/buildpacks/lifecycle"
 	"github.com/moby/buildkit/client/llb"
 	"github.com/moby/buildkit/frontend/dockerfile/dockerfile2llb"

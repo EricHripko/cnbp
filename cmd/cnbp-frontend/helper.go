@@ -1,9 +1,10 @@
-package cib
+package main
 
 import (
 	"context"
 	"errors"
 	"strconv"
+	"strings"
 
 	"github.com/moby/buildkit/client/llb"
 )
@@ -38,4 +39,14 @@ func FetchGID(ctx context.Context, state llb.State) (int, error) {
 		}
 	}
 	return 0, errors.New("group not found")
+}
+
+func parseKeyValue(env string) (string, string) {
+	parts := strings.SplitN(env, "=", 2)
+	v := ""
+	if len(parts) > 1 {
+		v = parts[1]
+	}
+
+	return parts[0], v
 }

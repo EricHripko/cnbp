@@ -3,7 +3,7 @@ package cnbp2llb
 import (
 	"context"
 
-	"github.com/EricHripko/cnbp/pkg/cib"
+	"github.com/EricHripko/buildkit-fdk/pkg/cib"
 	"github.com/moby/buildkit/client/llb"
 )
 
