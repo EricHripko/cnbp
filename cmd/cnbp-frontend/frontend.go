@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-	"strings"
 
 	"github.com/EricHripko/cnbp/pkg/cib"
 	"github.com/EricHripko/cnbp/pkg/cnbp2llb"
+	"github.com/EricHripko/cnbp/pkg/config"
 	"github.com/containerd/containerd/platforms"
 
 	"github.com/moby/buildkit/client/llb"
@@ -66,15 +66,14 @@ func BuildWithService(ctx context.Context, c client.Client, svc cib.Service) (*c
 				if err != nil {
 					return err
 				}
-				builder := strings.TrimSpace(string(dtMetadata))
-				if strings.Contains(builder, "\n") {
-					// Strip BuildKit syntax comment
-					lines := strings.Split(builder, "\n")
-					builder = lines[len(lines)-1]
+
+				buildCfg, err := config.FromProjectTOML(string(dtMetadata))
+				if err != nil {
+					return err
 				}
 
 				// Prepare build environment
-				env, err := cnbp2llb.BuildEnvironment(ctx, svc, tp, builder)
+				env, err := cnbp2llb.BuildEnvironment(ctx, svc, tp, buildCfg.Builder())
 				if err != nil {
 					return errors.Wrap(err, "cannot prepare environment")
 				}
