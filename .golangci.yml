@@ -1,0 +1,5 @@
+run:
+  # Exclude tests
+  tests: false
+  skip-files:
+    - tests
