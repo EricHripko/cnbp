@@ -7,7 +7,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/EricHripko/cnbp/pkg/cib"
+	"github.com/EricHripko/buildkit-fdk/pkg/cib"
 	"github.com/EricHripko/cnbp/pkg/cnbp2llb"
 	"github.com/EricHripko/cnbp/pkg/config"
 	"github.com/containerd/containerd/platforms"
@@ -79,11 +79,11 @@ func BuildWithService(ctx context.Context, c client.Client, svc cib.Service) (*c
 				}
 
 				// Prepare cache
-				uid, err := cib.FetchUID(ctx, env)
+				uid, err := FetchUID(ctx, env)
 				if err != nil {
 					return err
 				}
-				gid, err := cib.FetchGID(ctx, env)
+				gid, err := FetchGID(ctx, env)
 				if err != nil {
 					return err
 				}

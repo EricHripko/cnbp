@@ -4,8 +4,7 @@ import (
 	"context"
 	"path"
 
-	"github.com/EricHripko/cnbp/pkg/cib"
-
+	"github.com/EricHripko/buildkit-fdk/pkg/cib"
 	"github.com/moby/buildkit/client/llb"
 )
 
